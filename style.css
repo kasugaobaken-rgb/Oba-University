@@ -453,8 +453,159 @@ h3::before { content: ''; display: inline-block; width: 4px; height: 14px; backg
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .two-col { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
-  .prof-grid { grid-template-columns: 1fr 1fr; }
-  .main-nav { display: none; }
+  body { font-size: 13px; }
+
+  /* TOP BAR: 縦並び・中央寄せ */
+  .top-bar {
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 12px;
+    text-align: center;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .top-bar-links {
+    display: flex; flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 12px;
+  }
+  .top-bar-links a { margin-left: 0; }
+
+  /* HEADER: ロゴ→ナビの縦積み。ナビは折り返し表示 */
+  .site-header {
+    padding: 10px 14px;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .logo-area { justify-content: center; }
+  .logo-text .lt-ja { font-size: 18px; }
+  .logo-text .lt-en { font-size: 10px; }
+  .main-nav {
+    display: flex !important;       /* 既存の display:none を解除 */
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 4px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
+  .main-nav a { font-size: 12px; padding: 5px 8px; }
+
+  /* TICKER: 折り返し許容 */
+  .ticker {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  /* HERO BANNER: インラインstyleを上書き */
+  .hero-banner {
+    height: auto !important;
+    min-height: 320px;
+  }
+  .hero-overlay-side {
+    /* 右側の薄いグラデーションだと文字が背景に負けるので全体を暗く */
+    background: linear-gradient(to bottom, rgba(10,20,40,0.55) 0%, rgba(10,20,40,0.85) 100%) !important;
+  }
+  .hero-content {
+    padding: 28px 18px !important;
+    max-width: 100% !important;
+  }
+  .hero-title-text {
+    font-size: 22px !important;
+    line-height: 1.45 !important;
+  }
+  .hero-desc { font-size: 12px !important; line-height: 1.7 !important; }
+  .hero-actions { flex-wrap: wrap; }
+  .hero-actions a { flex: 1 1 auto; text-align: center; }
+
+  /* QUICK LINKS: 6項目を3列x2行に */
+  .quick-links { flex-wrap: wrap; }
+  .ql {
+    flex: 0 0 33.333%;
+    padding: 12px 6px;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ql:nth-child(3) { border-right: none; }
+  .ql:nth-child(4),
+  .ql:nth-child(5),
+  .ql:nth-child(6) { border-bottom: none; }
+
+  /* NEWS SECTION: 2カラム→1カラム */
+  .news-section { grid-template-columns: 1fr !important; }
+  .news-col-main {
+    padding: 24px 16px !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .news-col-side { padding: 20px 16px !important; }
+  .news-item {
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    gap: 4px 10px;
+    padding: 12px 0;
+  }
+  .news-item .n-title {
+    grid-column: 1 / -1;     /* タイトルは2行目フル幅 */
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  /* FACULTY/SECTION BLOCK */
+  .section-block { padding: 24px 16px !important; }
+  .card-grid { grid-template-columns: 1fr; gap: 12px; }
+  .sec-title-sm { font-size: 14px; flex-wrap: wrap; gap: 6px; }
+
+  /* STATS STRIP: 3列→1列、区切り線も縦→横に */
+  .stats-strip { padding: 24px 14px; }
+  .stats-strip.cols3,
+  .stats-strip.cols4 { grid-template-columns: 1fr; gap: 16px; }
+  .stat-item + .stat-item {
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 16px;
+  }
+  .stat-num { font-size: 28px; }
+
+  /* PAGE HERO (下層ページ用) */
+  .page-hero { padding: 28px 16px 24px; }
+  .page-hero-title { font-size: 22px; }
+  .page-hero-sub { font-size: 12px; }
+
+  /* CONTENT */
+  .content-wrap { padding: 24px 16px 40px; }
+  .two-col { grid-template-columns: 1fr; padding: 24px 16px; gap: 28px; }
+  .prof-grid { grid-template-columns: 1fr; }
+  .dept-list { grid-template-columns: 1fr; }
+  .sec-title { font-size: 17px; }
+
+  /* TABLE: 横スクロール許容 */
+  .data-table { display: block; overflow-x: auto; white-space: nowrap; }
+
+  /* FOOTER */
+  .site-footer { padding: 28px 16px 20px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+    align-items: center;
+  }
+  .fb-logo { justify-content: center !important; }
+}
+
+/* さらに狭い画面（小型スマホ）: クイックリンクを2列に */
+@media (max-width: 480px) {
+  .stats-strip.cols3 .stat-num { font-size: 24px; }
+  .ql { flex: 0 0 50%; }
+  .ql:nth-child(3) { border-right: 1px solid var(--border); }
+  .ql:nth-child(2) { border-right: none; }
+  .ql:nth-child(4) { border-right: none; border-bottom: 1px solid var(--border); }
+  .ql:nth-child(3) { border-bottom: 1px solid var(--border); }
+  .ql:nth-child(5) { border-bottom: none; }
+  .ql:nth-child(6) { border-bottom: none; border-right: none; }
+  .hero-title-text { font-size: 20px !important; }
 }

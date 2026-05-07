@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>卒業生ポータル | 大馬大学（おおばだいがく）</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* === 卒業生ポータル ページ専用スタイル === */
+.login-card {
+  border: 1px solid var(--border);
+  padding: 32px;
+  background: var(--bg-light);
+  max-width: 440px;
+  margin: 0 auto 32px;
+}
+.login-head {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.login-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  font-family: 'Noto Serif JP', serif;
+  letter-spacing: 0.04em;
+}
+.login-sub {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+.login-row { margin-bottom: 14px; }
+.login-row label {
+  font-size: 12px;
+  color: var(--text-sub);
+  display: block;
+  margin-bottom: 5px;
+}
+.login-row input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  background: #fff;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.login-row input:focus {
+  outline: none;
+  border-color: var(--navy);
+}
+.login-btn {
+  width: 100%;
+  padding: 11px;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: 0.06em;
+}
+.login-btn:hover { background: var(--navy-mid); }
+.login-foot {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 12px;
+  color: #888;
+}
+.login-foot a { color: var(--navy); }
+.login-error {
+  display: none;
+  background: #fff0f0;
+  border: 1px solid #e88a8a;
+  border-left: 3px solid #c0392b;
+  color: #8a2020;
+  font-size: 12px;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+}
+.login-error.show { display: block; }
+.login-help {
+  font-size: 11px;
+  color: #888;
+  background: #fafafa;
+  border: 1px dashed #d8d8d8;
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  line-height: 1.7;
+}
+.login-help strong { color: var(--navy); }
+
+/* ダッシュボード */
+.dash-wrap { display: none; }
+.dash-wrap.show { display: block; }
+
+.dash-userbar {
+  background: var(--navy);
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.dash-userbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.dash-userbar-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+.dash-userbar-meta {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  font-family: Georgia, serif;
+}
+.logout-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.4);
+  color: #fff;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.logout-btn:hover { background: rgba(255,255,255,0.1); }
+
+.profile-block {
+  border: 1px solid var(--border);
+  background: #fff;
+  margin-bottom: 24px;
+}
+.profile-block-head {
+  background: var(--bg-light);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  font-family: 'Noto Serif JP', serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.profile-block-head .marker {
+  font-size: 10px;
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+.profile-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.profile-table th,
+.profile-table td {
+  padding: 10px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eef0f3;
+  vertical-align: top;
+}
+.profile-table th {
+  width: 36%;
+  background: #fafbfc;
+  font-weight: 500;
+  color: var(--text-sub);
+  font-size: 12px;
+}
+.profile-table td { color: var(--text); }
+.profile-table tr:last-child th,
+.profile-table tr:last-child td { border-bottom: none; }
+.muted { color: #aaa; font-size: 12px; }
+.tag-active {
+  display: inline-block;
+  background: #e8f0e0;
+  color: #4a6a2a;
+  font-size: 10px;
+  padding: 2px 8px;
+  border: 1px solid #c5d8a8;
+  font-family: Georgia, serif;
+  letter-spacing: 0.06em;
+}
+.tag-warn {
+  display: inline-block;
+  background: #fdf3d8;
+  color: #8a6030;
+  font-size: 10px;
+  padding: 2px 8px;
+  border: 1px solid #e8c878;
+  font-family: Georgia, serif;
+  letter-spacing: 0.06em;
+}
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.history-list li {
+  padding: 10px 16px;
+  border-bottom: 1px solid #eef0f3;
+  font-size: 13px;
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+.history-list li:last-child { border-bottom: none; }
+.history-date {
+  font-family: Georgia, serif;
+  color: var(--gold);
+  font-size: 12px;
+  white-space: nowrap;
+  min-width: 110px;
+}
+.dash-notice {
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 24px;
+  line-height: 1.7;
+}
+.dash-meta {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+  font-size: 11px;
+  color: #999;
+  font-family: Georgia, serif;
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .profile-table th { width: 40%; font-size: 11px; padding: 8px 10px; }
+  .profile-table td { font-size: 12px; padding: 8px 10px; }
+  .history-list li { flex-direction: column; gap: 4px; padding: 10px 12px; }
+  .history-date { min-width: 0; }
+  .dash-userbar { padding: 12px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>大馬大学（おおばだいがく） ／ 東京都板橋区大馬3-1-1　TEL: 03-3978-XXXX</div>
+  <div class="top-bar-links">
+    <a href="admissions.html">受験生の方へ</a>
+    <a href="portal.html">在学生ポータル</a>
+    <a href="alumni-portal.html">卒業生ポータル</a>
+    <a href="staff.html">教職員</a>
+    <a href="en/index.html">English</a>
+  </div>
+</div>
+
+<header class="site-header">
+  <a href="index.html" class="logo-area">
+    <div class="logo-mark">
+      <img src="oba_emblem.png" alt="大馬大学エンブレム" style="width:52px;height:52px;object-fit:contain;display:block;">
+    </div>
+    <div class="logo-text">
+      <div class="lt-ja">大馬大学</div>
+      <div class="lt-en">Oba University — est. 1972</div>
+    </div>
+  </a>
+  <nav class="main-nav">
+    <a href="about.html" class="">大学案内</a>
+    <a href="faculties.html" class="">学部・大学院</a>
+    <a href="research.html" class="">研究活動</a>
+    <a href="student-life.html" class="">学生生活</a>
+    <a href="admissions.html" class="">入試情報</a>
+    <a href="career.html" class="">就職・進路</a>
+    <a href="access.html" class="">アクセス</a>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-en">ALUMNI PORTAL</div>
+    <div class="page-hero-title">卒業生ポータル（OBA-Alumni）</div>
+    <div class="page-hero-sub">同窓会員専用 ／ 個人情報照会・各種証明書申請・同窓会告知</div>
+  </div>
+</div>
+<div class="breadcrumb">
+  <a href="index.html">ホーム</a><span class="sep">›</span><span>卒業生ポータル</span>
+</div>
+
+<div class="content-wrap" style="max-width:760px;">
+
+  <!-- ========== ログイン画面 ========== -->
+  <div id="login-view">
+    <div class="notice-box red">
+      <strong>【重要】卒業生ポータルへのアクセスについて</strong><br>
+      本システムは大馬大学を卒業された方（同窓会員）専用の照会システムです。卒業生番号と初期パスワード（生年月日 yyyymmdd 形式）でログインしてください。初回ログイン後は速やかにパスワードを変更してください。
+    </div>
+
+    <div class="login-card">
+      <div class="login-head">
+        <div class="login-title">OBA-Alumni ログイン</div>
+        <div class="login-sub">大馬大学 同窓会員専用システム</div>
+      </div>
+
+      <div class="login-error" id="login-error">
+        卒業生番号またはパスワードが正しくありません。
+      </div>
+
+      <div class="login-help">
+        <strong>初期パスワードについて</strong><br>
+        本システムの初期パスワードは、卒業生本人の生年月日（西暦8桁・例：19700401）に設定されています。パスワード未変更の方は初期パスワードでログインしてください。
+      </div>
+
+      <form id="login-form" autocomplete="off">
+        <div class="login-row">
+          <label for="login-id">卒業生番号</label>
+          <input type="text" id="login-id" name="login-id" placeholder="例：86L-0234">
+        </div>
+        <div class="login-row">
+          <label for="login-pw">パスワード</label>
+          <input type="password" id="login-pw" name="login-pw" placeholder="初期パスワード：生年月日8桁">
+        </div>
+        <button type="submit" class="login-btn">ログイン</button>
+      </form>
+
+      <div class="login-foot">
+        <a href="#">卒業生番号を忘れた方</a>　／　<a href="#">パスワード再発行</a>
+      </div>
+    </div>
+
+    <div class="sec-title">OBA-Alumniでできること</div>
+    <div class="card-grid" style="grid-template-columns:repeat(2,1fr);">
+      <div class="card"><div class="card-title">個人情報照会</div><div class="card-sub">学籍情報・卒業情報・登録連絡先を確認できます。</div></div>
+      <div class="card"><div class="card-title">各種証明書申請</div><div class="card-sub">卒業証明書・成績証明書・修了証明書をオンラインで申請。</div></div>
+      <div class="card"><div class="card-title">同窓会員名簿</div><div class="card-sub">同窓会会報・支部活動・同期生の活動状況を閲覧。</div></div>
+      <div class="card"><div class="card-title">大学からの告知</div><div class="card-sub">記念事業・寄付金・公開講座など卒業生向けの情報。</div></div>
+    </div>
+  </div>
+
+  <!-- ========== ログイン後ダッシュボード ========== -->
+  <div id="dash-view" class="dash-wrap">
+    <div class="dash-userbar">
+      <div class="dash-userbar-left">
+        <div>
+          <div class="dash-userbar-name" id="dash-name">―</div>
+          <div class="dash-userbar-meta" id="dash-meta">―</div>
+        </div>
+      </div>
+      <button type="button" class="logout-btn" id="logout-btn">ログアウト</button>
+    </div>
+
+    <div class="dash-notice">
+      <strong style="color:var(--navy);">同窓会事務局よりお知らせ</strong><br>
+      大馬大学 創立55周年記念事業へのご協力のお願い／同窓会会報「大馬OB通信」最新号を発行しました。
+    </div>
+
+    <!-- 個人情報 -->
+    <div class="profile-block">
+      <div class="profile-block-head">
+        <span>1. 卒業生 個人情報</span>
+        <span class="marker">PERSONAL DATA</span>
+      </div>
+      <table class="profile-table">
+        <tr><th>卒業生番号</th><td id="p-id">―</td></tr>
+        <tr><th>氏名（漢字）</th><td id="p-name">―</td></tr>
+        <tr><th>氏名（カナ）</th><td id="p-name-kana">―</td></tr>
+        <tr><th>生年月日</th><td id="p-birth">―</td></tr>
+        <tr><th>性別</th><td id="p-gender">―</td></tr>
+        <tr><th>同窓会員区分</th><td id="p-member">―</td></tr>
+        <tr><th>登録住所</th><td id="p-address">―</td></tr>
+        <tr><th>登録メールアドレス</th><td id="p-email">―</td></tr>
+        <tr><th>登録電話番号</th><td id="p-phone">―</td></tr>
+      </table>
+    </div>
+
+    <!-- 学籍情報 -->
+    <div class="profile-block">
+      <div class="profile-block-head">
+        <span>2. 学籍情報</span>
+        <span class="marker">ACADEMIC RECORD</span>
+      </div>
+      <table class="profile-table">
+        <tr><th>入学年月</th><td id="p-enroll">―</td></tr>
+        <tr><th>所属学部</th><td id="p-faculty">―</td></tr>
+        <tr><th>所属学科</th><td id="p-dept">―</td></tr>
+        <tr><th>卒業年月</th><td id="p-graduate">―</td></tr>
+        <tr><th>学位</th><td id="p-degree">―</td></tr>
+        <tr><th>卒業区分</th><td id="p-grad-type">―</td></tr>
+      </table>
+    </div>
+
+    <!-- 学修履歴 -->
+    <div class="profile-block">
+      <div class="profile-block-head">
+        <span>3. 学修・在学履歴</span>
+        <span class="marker">HISTORY</span>
+      </div>
+      <ul class="history-list" id="p-history">
+        <li><span class="history-date">―</span><span>―</span></li>
+      </ul>
+    </div>
+
+    <!-- 課外活動 -->
+    <div class="profile-block">
+      <div class="profile-block-head">
+        <span>4. 在学時 課外活動</span>
+        <span class="marker">CLUB ACTIVITY</span>
+      </div>
+      <table class="profile-table">
+        <tr><th>所属サークル</th><td id="p-club">―</td></tr>
+        <tr><th>役職</th><td id="p-club-role">―</td></tr>
+        <tr><th>在籍期間</th><td id="p-club-period">―</td></tr>
+      </table>
+    </div>
+
+    <div class="dash-meta">
+      最終ログイン：<span id="last-login">―</span>　／　Session ID: <span id="session-id">―</span>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="fc">
+      <div class="fc-title">大馬大学について</div>
+      <p>〒175-0071<br>東京都板橋区大馬三丁目1番1号<br>TEL: 03-3978-XXXX（代表）<br>受付時間：平日 9:00〜17:00</p>
+      <p style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.3)">学校法人大馬学園</p>
+    </div>
+    <div class="fc">
+      <div class="fc-title">学部・大学院</div>
+      <ul>
+        <li><a href="faculty-literature.html">文学部</a></li>
+        <li><a href="faculty-economics.html">経済学部</a></li>
+        <li><a href="faculty-law.html">法学部</a></li>
+        <li><a href="faculty-arts.html">芸術学部</a></li>
+        <li><a href="graduate.html">大学院</a></li>
+      </ul>
+    </div>
+    <div class="fc">
+      <div class="fc-title">学生生活</div>
+      <ul>
+        <li><a href="clubs.html">サークル・課外活動</a></li>
+        <li><a href="facilities.html">施設案内</a></li>
+        <li><a href="library.html">図書館</a></li>
+        <li><a href="international.html">国際交流</a></li>
+        <li><a href="career.html">就職・進路</a></li>
+      </ul>
+    </div>
+    <div class="fc">
+      <div class="fc-title">各種情報</div>
+      <ul>
+        <li><a href="privacy.html">プライバシーポリシー</a></li>
+        <li><a href="disclosure.html">情報公開</a></li>
+        <li><a href="sitemap.html">サイトマップ</a></li>
+        <li><a href="harassment.html">ハラスメント相談</a></li>
+        <li><a href="access.html">交通案内</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <img src="oba_emblem.png" alt="" style="width:32px;height:32px;object-fit:contain;opacity:0.7;">
+      <span class="footer-logo-text">大馬大学（おおばだいがく） / Oba University</span>
+    </div>
+    <div class="footer-copy">© 2025 Oba University. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<script>
+/* ===========================================================
+   大馬大学 卒業生ポータル（OBA-Alumni）認証 & データ表示
+   -----------------------------------------------------------
+   ・卒業生データはこのオブジェクトに追加するだけで増やせます
+   ・初期パスワードは生年月日 yyyymmdd 形式の8桁
+   =========================================================== */
+const ALUMNI_DB = {
+  "86L-0234": {
+    password: "19630612",
+    name: "最上 清貴",
+    nameKana: "モガミ キヨタカ",
+    birth: "1963年6月12日",
+    gender: "男",
+    member: '<span class="tag-active">正会員</span>',
+    address: '<span class="muted">※非開示／本人確認後に開示</span>',
+    email: '<span class="muted">未登録</span>',
+    phone: '<span class="muted">未登録</span>',
+    enroll: "1982年4月",
+    faculty: "文学部",
+    dept: '<span class="muted">―</span>',
+    graduate: "1986年3月",
+    degree: "学士（文学）",
+    gradType: "卒業（4年次修了）",
+    history: [
+      { date: "1982年4月", text: "大馬大学 文学部 入学" },
+      { date: "1985年4月", text: "4年次進級" },
+      { date: "1986年3月", text: "卒業" }
+    ],
+    club: '<a href="clubs.html" style="color:var(--navy);text-decoration:underline;">オカルト研究会</a>',
+    clubRole: '<span class="muted">―</span>',
+    clubPeriod: "1982年4月 〜 1986年3月"
+  }
+  // 追加例:
+  // "85E-0117": { password: "19620810", name: "...", ... }
+};
+
+(function() {
+  const loginView = document.getElementById('login-view');
+  const dashView = document.getElementById('dash-view');
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  function show(el) { el.classList.add('show'); }
+  function hide(el) { el.classList.remove('show'); }
+
+  function setText(id, html) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  }
+
+  function fillDashboard(id, data) {
+    setText('dash-name', data.name);
+    setText('dash-meta', 'ALUMNI ID: ' + id + ' / ' + data.faculty + ' / ' + data.graduate + ' 卒');
+
+    setText('p-id', id);
+    setText('p-name', data.name);
+    setText('p-name-kana', data.nameKana);
+    setText('p-birth', data.birth);
+    setText('p-gender', data.gender);
+    setText('p-member', data.member);
+    setText('p-address', data.address);
+    setText('p-email', data.email);
+    setText('p-phone', data.phone);
+
+    setText('p-enroll', data.enroll);
+    setText('p-faculty', data.faculty);
+    setText('p-dept', data.dept);
+    setText('p-graduate', data.graduate);
+    setText('p-degree', data.degree);
+    setText('p-grad-type', data.gradType);
+
+    const histEl = document.getElementById('p-history');
+    histEl.innerHTML = data.history.map(function(h) {
+      return '<li><span class="history-date">' + h.date + '</span><span>' + h.text + '</span></li>';
+    }).join('');
+
+    setText('p-club', data.club);
+    setText('p-club-role', data.clubRole);
+    setText('p-club-period', data.clubPeriod);
+
+    // ダミーのセッション情報
+    const now = new Date();
+    const pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+    setText('last-login',
+      now.getFullYear() + '/' + pad(now.getMonth()+1) + '/' + pad(now.getDate())
+      + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds())
+    );
+    setText('session-id',
+      'OBA-' + Math.random().toString(36).slice(2, 10).toUpperCase()
+    );
+  }
+
+  loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const id = document.getElementById('login-id').value.trim();
+    const pw = document.getElementById('login-pw').value.trim();
+    const record = ALUMNI_DB[id];
+
+    if (record && record.password === pw) {
+      loginError.classList.remove('show');
+      fillDashboard(id, record);
+      hide(loginView);
+      show(dashView);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      loginError.classList.add('show');
+    }
+  });
+
+  logoutBtn.addEventListener('click', function() {
+    document.getElementById('login-id').value = '';
+    document.getElementById('login-pw').value = '';
+    hide(dashView);
+    loginView.style.display = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+</body>
+</html>
